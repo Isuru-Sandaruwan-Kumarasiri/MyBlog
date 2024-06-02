@@ -1,23 +1,94 @@
-import React from "react";
+import React, { useRef } from "react";
 import InputBox from "../Components/InputBox";
 import googleIcon from "../imgs/google.png";
 import { Link } from "react-router-dom";
 import Page_Animation from "../Common/Page_Animation";
+import {Toaster,toast} from 'react-hot-toast'
+import axios from 'axios'//to connect to the server
+
+
+
+
+
 
 function UserAuthForm({ type }) {
+
+
+   const authForm=useRef();//get the reference of the form
+
+   const userAuthThroughServer = (serverRoute, formData) => {
+    console.log(import.meta.env.VITE_SERVER_DOMAIN)
+    console.log(import.meta.env.VITE_SERVER_DOMAIN + serverRoute, formData);
+    
+    axios.post("http://localhost:3000" + serverRoute, formData)
+      .then(({ data }) => {
+        console.log(data);
+      })
+      .catch(({ response }) => {
+        if (response && response.data && response.data.error) {
+          toast.error(response.data.error);
+        } else {
+          toast.error('An unexpected error occurred.');
+        }
+      });
+  };
+
+
+
+  const handleSubmit=(e)=>{
+
+     e.preventDefault();
+
+     let serverRoute= type=="sign-in"? "/signin":"/signup";
+
+     //fromdata
+     let form =new FormData(authForm.current)
+     let formData={};
+
+     for(let[key,value] of form.entries()){
+      formData[key]=value;
+     }
+     
+
+    //form validation
+     let {fullname,email,password}=formData;
+
+     let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // regex for email
+     let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // regex for password
+
+
+    if ( type!=='sign-in' && (!fullname || fullname.length <3)) {
+         return toast.error( "Full name must be at least 3 letters long" );
+    }
+    if(!email.length){
+        return toast.error("Enter email")
+    }
+    if(!emailRegex.test(email)){
+        return toast.error("Email is invalid")
+   }
+   if(!passwordRegex.test(password)){
+       return toast.error("password should be 6 to 20 charchters long with a numeric ,1 lowercase and 1 upercase letterss")
+   }
+   userAuthThroughServer(serverRoute,formData);
+
+  }
+
+  
+
   return (
     <Page_Animation keyValue={type}>
       <section className="h-cover flex items-center justify-center">
-        <form className="w-[80%] max-w-[400px]">
+         <Toaster/>
+        <form className="w-[80%] max-w-[400px]" ref={authForm}>
           <h1 className="text-4xl font-gelasio capitalize text-center mb-24">
             {type == "sign-in" ? "Welcome Back" : "Join Us Today"}
           </h1>
 
           {type !== "sign-in" ? (
             <InputBox
-              name="full name"
+              name="fullname"//these effect to the FormData since should bee use  same name for the FormData 
               type="text"
-              placeholder="full name"
+              placeholder="Full name"
               icon="fi-rr-user"
             />
           ) : (
@@ -36,7 +107,10 @@ function UserAuthForm({ type }) {
             placeholder="password"
             icon="fi-rr-key"
           />
-          <button className="btn-dark center mt-14">
+          <button className="btn-dark center mt-14"
+          type="submit"
+          onClick={handleSubmit}
+          >
             {type.replace("-", " ")}
           </button>
 
@@ -51,7 +125,7 @@ function UserAuthForm({ type }) {
             Continue With Google
           </button>
 
-          {type == "sign-in" ? (
+          {type === "sign-in" ? (
             <p className="mt-6 text-dark-grey text-xl text-center">
               Dont't have an account?
               <Link to="/signup" className="underline text-black text-xl ml-1">
@@ -63,7 +137,7 @@ function UserAuthForm({ type }) {
               Already a member?
               <Link to="/signin" className="underline text-black text-xl ml-1">
                 Sign in here.
-              </Link>
+              </Link>   
             </p>
           )}
         </form>
