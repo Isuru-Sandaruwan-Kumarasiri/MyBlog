@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import Page_Animation from "../Common/Page_Animation";
 import {Toaster,toast} from 'react-hot-toast'
 import axios from 'axios'//to connect to the server
+import { StoreInSession } from "../Common/Session";
 
 
 
@@ -14,7 +15,7 @@ import axios from 'axios'//to connect to the server
 function UserAuthForm({ type }) {
 
 
-   const authForm=useRef();//get the reference of the form
+  //  const authForm=useRef(null);//get the reference of the form
 
    const userAuthThroughServer = (serverRoute, formData) => {
     console.log(import.meta.env.VITE_SERVER_DOMAIN)
@@ -22,7 +23,8 @@ function UserAuthForm({ type }) {
     
     axios.post("http://localhost:3000" + serverRoute, formData)
       .then(({ data }) => {
-        console.log(data);
+          StoreInSession("user",JSON.stringify(data))
+          console.log(sessionStorage)
       })
       .catch(({ response }) => {
         if (response && response.data && response.data.error) {
@@ -42,7 +44,7 @@ function UserAuthForm({ type }) {
      let serverRoute= type=="sign-in"? "/signin":"/signup";
 
      //fromdata
-     let form =new FormData(authForm.current)
+     let form =new FormData(formElement)
      let formData={};
 
      for(let[key,value] of form.entries()){
@@ -79,7 +81,7 @@ function UserAuthForm({ type }) {
     <Page_Animation keyValue={type}>
       <section className="h-cover flex items-center justify-center">
          <Toaster/>
-        <form className="w-[80%] max-w-[400px]" ref={authForm}>
+        <form className="w-[80%] max-w-[400px]" id="formElement">
           <h1 className="text-4xl font-gelasio capitalize text-center mb-24">
             {type == "sign-in" ? "Welcome Back" : "Join Us Today"}
           </h1>
@@ -108,7 +110,7 @@ function UserAuthForm({ type }) {
             icon="fi-rr-key"
           />
           <button className="btn-dark center mt-14"
-          type="submit"
+          type='submit'
           onClick={handleSubmit}
           >
             {type.replace("-", " ")}
