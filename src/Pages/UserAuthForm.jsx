@@ -1,11 +1,12 @@
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
 import InputBox from "../Components/InputBox";
 import googleIcon from "../imgs/google.png";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import Page_Animation from "../Common/Page_Animation";
 import {Toaster,toast} from 'react-hot-toast'
 import axios from 'axios'//to connect to the server
 import { StoreInSession } from "../Common/Session";
+import { UserContext } from "../App";
 
 
 
@@ -13,6 +14,9 @@ import { StoreInSession } from "../Common/Session";
 
 
 function UserAuthForm({ type }) {
+
+  let {userAuth:{access_token},setUserAuth}=useContext(UserContext);
+  console.log(access_token);
 
 
   //  const authForm=useRef(null);//get the reference of the form
@@ -24,7 +28,7 @@ function UserAuthForm({ type }) {
     axios.post("http://localhost:3000" + serverRoute, formData)
       .then(({ data }) => {
           StoreInSession("user",JSON.stringify(data))
-          console.log(sessionStorage)
+          setUserAuth(data)
       })
       .catch(({ response }) => {
         if (response && response.data && response.data.error) {
@@ -78,6 +82,9 @@ function UserAuthForm({ type }) {
   
 
   return (
+    access_token ?
+         <Navigate to='/' />
+    :
     <Page_Animation keyValue={type}>
       <section className="h-cover flex items-center justify-center">
          <Toaster/>
