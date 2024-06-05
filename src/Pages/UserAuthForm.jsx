@@ -7,6 +7,7 @@ import {Toaster,toast} from 'react-hot-toast'
 import axios from 'axios'//to connect to the server
 import { StoreInSession } from "../Common/Session";
 import { UserContext } from "../App";
+import { authWithGoogle } from "../Common/FireBase";
 
 
 
@@ -16,14 +17,14 @@ import { UserContext } from "../App";
 function UserAuthForm({ type }) {
 
   let {userAuth:{access_token},setUserAuth}=useContext(UserContext);
-  console.log(access_token);
+  // console.log(access_token);
 
 
   //  const authForm=useRef(null);//get the reference of the form
 
    const userAuthThroughServer = (serverRoute, formData) => {
-    console.log(import.meta.env.VITE_SERVER_DOMAIN)
-    console.log(import.meta.env.VITE_SERVER_DOMAIN + serverRoute, formData);
+    // console.log(import.meta.env.VITE_SERVER_DOMAIN)
+    // console.log(import.meta.env.VITE_SERVER_DOMAIN + serverRoute, formData);
     
     axios.post("http://localhost:3000" + serverRoute, formData)
       .then(({ data }) => {
@@ -79,6 +80,18 @@ function UserAuthForm({ type }) {
 
   }
 
+  const handleGoogleAuth= async(e)=>{
+
+    e.preventDefault();
+    await authWithGoogle().then(user=>{
+      console.log(user)
+    })
+    .catch(err=>{
+      toast.error('trouble login through google')
+      return console.log(err)
+    })
+  }
+
   
 
   return (
@@ -129,7 +142,9 @@ function UserAuthForm({ type }) {
             <hr className="w-1/2 border-black" />
           </div>
 
-          <button className="btn-dark flex items-center justify-center gap-4 w-[90%] center">
+          <button className="btn-dark flex items-center justify-center gap-4 w-[90%] center"
+          onClick={handleGoogleAuth}
+          >
             <img src={googleIcon} alt="" className="w-5" />
             Continue With Google
           </button>
