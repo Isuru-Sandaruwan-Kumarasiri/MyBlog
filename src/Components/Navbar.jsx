@@ -13,10 +13,19 @@ function Navbar() {
 
 
   const handleUsernavPanel=()=>{
+      //  setUserNavPanel(true)
+      setUserNavPanel(currentVal=>!currentVal)
 
+      
   }
-
-
+  //outside clicking hide handling
+  const handleBlur=()=>{
+       
+    // setUserNavPanel(false)
+    setTimeout(()=>{
+      setUserNavPanel(false)
+    },200)
+ }
 
 
   return (
@@ -61,6 +70,7 @@ function Navbar() {
 
                 <button className="w-12 h-12 mt-1"
                 onClick={handleUsernavPanel}
+                onBlur={handleBlur}
                 >
                    <img src={profile_img} alt=""  className="w-full h-full object-cover rounded-full"/>
                 </button>
