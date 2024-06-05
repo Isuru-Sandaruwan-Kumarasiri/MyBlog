@@ -2,13 +2,22 @@ import React, { useContext, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import logo from "../imgs/logo.png";
 import { UserContext } from "../App";
+import UserNavigationPanel from "./UserNavigationPanel";
 
 function Navbar() {
   const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
-  const {
-    userAuth,
-    userAuth: { access_token, profile_img },
-  } = useContext(UserContext);
+
+  const [userNavPanel,setUserNavPanel]=useState(false);
+
+  const {userAuth, userAuth: { access_token, profile_img }, } = useContext(UserContext);
+
+
+  const handleUsernavPanel=()=>{
+
+  }
+
+
+
 
   return (
     <>
@@ -42,11 +51,26 @@ function Navbar() {
             <i className="fi fi-rr-search text-xl "></i>
           </button>
 
-          {!access_token ? (
+          {access_token ? (
             <>
               <Link to="/dasjboard/notification">
-                <button className="w-12  h-12 rounded-full bg-grey relative hover:bg-black/10"><i className="fi fi-rr-bell"></i></button>
+                <button className="w-12  h-12 rounded-full bg-grey relative hover:bg-black/10"><i className="fi fi-rr-bell text-2xl block mt-1"></i></button>
               </Link>
+
+              <div className="relative right-0">
+
+                <button className="w-12 h-12 mt-1"
+                onClick={handleUsernavPanel}
+                >
+                   <img src={profile_img} alt=""  className="w-full h-full object-cover rounded-full"/>
+                </button>
+
+                 { userNavPanel?
+                <UserNavigationPanel/>
+                :""
+                 }
+                 
+              </div>
             </>
           ) : (
             <>
@@ -64,6 +88,9 @@ function Navbar() {
               </Link>
             </>
           )}
+
+
+
         </div>
       </nav>
       <Outlet />
