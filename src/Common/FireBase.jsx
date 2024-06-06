@@ -31,7 +31,7 @@ export  const authWithGoogle=async()=>{
     let user=null;
 
     await signInWithPopup(auth,provider)
-    .then((reult)=>{
+    .then((result)=>{
         user=result.user
 
     })

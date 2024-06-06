@@ -10,11 +10,9 @@ const {userAuth:{username},setUserAuth}=useContext(UserContext);
 
 const signOutUser = ()=>{
     
-    console.log("In session")
     RemoveFormSession("user");
     setUserAuth({access_token:null});
-    console.log("out session")
-
+   
 }
 
   return (

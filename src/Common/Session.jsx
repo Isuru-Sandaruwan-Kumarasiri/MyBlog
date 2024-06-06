@@ -4,7 +4,7 @@ const StoreInSession=(key,value)=>{
 const LookInSession=(key)=>{
     return sessionStorage.getItem(key)
 }
-const RemoveFormSession=(key)=>{
+const RemoveFormSession =(key)=>{
     return sessionStorage.removeItem(key)
 }
 const LogOutUser=()=>{
