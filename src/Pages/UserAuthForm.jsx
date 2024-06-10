@@ -7,7 +7,11 @@ import {Toaster,toast} from 'react-hot-toast'
 import axios from 'axios'//to connect to the server
 import { StoreInSession } from "../Common/Session";
 import { UserContext } from "../App";
-import { authWithGoogle } from "../Common/FireBase";
+
+
+import { auth,provider } from "../Common/FireBase";
+import {signInWithPopup} from 'firebase/auth'
+
 
 
 
@@ -17,7 +21,7 @@ import { authWithGoogle } from "../Common/FireBase";
 function UserAuthForm({ type }) {
 
   let {userAuth:{access_token},setUserAuth}=useContext(UserContext);
-  // console.log(access_token);
+  console.log(access_token);
 
 
   //  const authForm=useRef(null);//get the reference of the form
@@ -28,7 +32,7 @@ function UserAuthForm({ type }) {
     
     axios.post("http://localhost:3000" + serverRoute, formData)
       .then(({ data }) => {
-          StoreInSession("user",JSON.stringify(data))
+          StoreInSession("user",JSON.stringify(data));
           setUserAuth(data)
       })
       .catch(({ response }) => {
@@ -81,31 +85,49 @@ function UserAuthForm({ type }) {
   }
 
   const handleGoogleAuth=(e)=>{
+       
+     e.preventDefault();
 
-    e.preventDefault();
+    // authWithGoogle().then(user=>{
+    //   console.log(user)
 
-    authWithGoogle().then(user=>{
-        
-    let serverRoute="/google-auth";
+    //   // let route="/google-auth";
+    //   // let formData={
+    //   //   access_token :user.accessToken
+    //   // }
+    //   // userAuthThroughServer(route,formData)
+    // })
+    // .catch(err=>{
+    //     toast.error("throuble login through google");
+    //     return console.log(err)
+    // })
+       
+       signInWithPopup(auth,provider).then(user=>{
+        console.log(user)
+        let formData={
+            access_token :user.accessToken
+        }
+          
 
-    let formData={
-        access_token:user.accessToken
-    }
+       })
 
-    userAuthThroughServer(serverRoute,formData)
 
-    })
-    .catch(err=>{
-      toast.error('trouble login through google')
-      return console.log(err)
-    })
+
+
+
+
+
+
+
+
+   
   }
 
   
 
   return (
     access_token ?
-         <Navigate to='/' />
+         <Navigate to="/" />
     :
     <Page_Animation keyValue={type}>
       <section className="h-cover flex items-center justify-center">

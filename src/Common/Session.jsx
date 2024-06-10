@@ -8,7 +8,7 @@ const RemoveFormSession =(key)=>{
     return sessionStorage.removeItem(key)
 }
 const LogOutUser=()=>{
-    sessionStorage.clear();
+   return sessionStorage.clear();
 
 }
 
