@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom';
 import logo from '../imgs/logo.png';
 import Page_Animation from '../Common/Page_Animation';
@@ -6,6 +6,8 @@ import defaultBanner from "../imgs/blog_banner.png"//it is a image
 import { UploadImage } from '../Common/AWS';
 import { EditorContext } from '../Pages/Editor';
 import {Toaster,toast} from 'react-hot-toast';
+import EditorJs from "@editorjs/editorjs"
+import { Tools } from './Tools';
 
 
 
@@ -16,6 +18,22 @@ function BlogEditor() {
     let {blog,blog:{title,banner,content,tags,des},setBlog}=useContext(EditorContext);
 
     console.log(blog);
+
+
+    //useEffect
+    useEffect(()=>{
+        let editor=new  EditorJs({//npm i @editorjs/editorjs
+            holderId:'textEditor',
+            data:'',
+            tools:Tools,
+            placeholder:"Let s write an awesome story",
+            
+        })  
+
+    },[])
+
+
+
 
    
     const handleBanner=(e)=>{
@@ -129,6 +147,12 @@ function BlogEditor() {
                     >
 
                     </textarea>
+
+                    <hr className='w-full opacity-10 my-5'></hr>
+
+                    <div id='textEditor' className='font-gelasio '></div>
+
+
 
 
                  </div>
