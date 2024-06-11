@@ -2,17 +2,20 @@ import React, { useContext, useRef } from 'react'
 import { Link } from 'react-router-dom';
 import logo from '../imgs/logo.png';
 import Page_Animation from '../Common/Page_Animation';
-import defaultBanner from "../imgs/blog_banner.png"
+import defaultBanner from "../imgs/blog_banner.png"//it is a image
 import { UploadImage } from '../Common/AWS';
 import { EditorContext } from '../Pages/Editor';
+import {Toaster,toast} from 'react-hot-toast';
 
 
 
 function BlogEditor() {
 
-    let blogBannerRef=useRef();
+    //let blogBannerRef=useRef();
 
-    let {blog:{title,banner,content,tags,des},setBlog}=useContext(EditorContext)
+    let {blog,blog:{title,banner,content,tags,des},setBlog}=useContext(EditorContext);
+
+    console.log(blog);
 
    
     const handleBanner=(e)=>{
@@ -22,10 +25,18 @@ function BlogEditor() {
         //   console.log("Img==>"+img);
 
           if(img){
+
+
+            let loadingToast=toast.loading("Üploading...")
+
             UploadImage(img).then((url)=>{
             // console.log(url)
                 if(url){
-                    blogBannerRef.current.src=url
+                    toast.dismiss(loadingToast);
+                    toast.success("Uploaded 👍")
+                    // blogBannerRef.current.src=url
+
+                    setBlog({...blog,banner:url})
                 }
             })
           }
@@ -51,7 +62,14 @@ function BlogEditor() {
         input.style.height=input.scrollHeight+"px"  //change titile hegith accoeding to the scrolling
 
 
-        setBlog({...blog})
+        setBlog({...blog,title:input.value})
+    }
+
+    const handleError=(e)=>{
+
+        let img=e.target;//console akedi load wenakot e.target.img ekat url eka assigned wen na correctly .eka nisa eka fixed karnn oni
+        img.src=defaultBanner
+
     }
 
 
@@ -62,7 +80,7 @@ function BlogEditor() {
                <img src={logo} alt=""   />
            </Link>
         <p className='max-md:hidden text-black line-clamp-1 w-full'>
-            New Blog
+            {title.length?title:"New Blog"}
         </p>
             <div className='flex gap-4 ml-auto'>
                <button className='btn-dark py-2'>
@@ -74,7 +92,7 @@ function BlogEditor() {
             </div>
        </nav>
 
-
+        <Toaster/>
         <Page_Animation>
            <section>
 
@@ -84,10 +102,12 @@ function BlogEditor() {
                     <div className='relative aspect-video hover:opacity-80 bg-white border-4 border-grey'>
                         <label htmlFor='uploadBanner'>
                             <img 
-                            ref={blogBannerRef}//useRef
-                            src={defaultBanner} 
+                           // ref={blogBannerRef}//useRef
+                           // src={defaultBanner} 
+                           src={banner}
                             alt=""
                             className='z-20'
+                            onError={handleError}
                              />
 
                             <input
