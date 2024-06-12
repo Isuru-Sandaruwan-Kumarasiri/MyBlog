@@ -15,20 +15,21 @@ function BlogEditor() {
 
     //let blogBannerRef=useRef();
 
-    let {blog,blog:{title,banner,content,tags,des},setBlog}=useContext(EditorContext);
+    let {blog,blog:{title,banner,content,tags,des},setBlog,textEditor,setTextEditor,setEditorState}=useContext(EditorContext);
 
-    console.log(blog);
+    //console.log(blog);
 
 
     //useEffect
     useEffect(()=>{
-        let editor=new  EditorJs({//npm i @editorjs/editorjs
+        setTextEditor(new  EditorJs({//npm i @editorjs/editorjs
             holderId:'textEditor',
-            data:'',
+            data:content,
             tools:Tools,
             placeholder:"Let s write an awesome story",
             
-        })  
+            //textEditor.isKey change to true
+        }) ) 
 
     },[])
 
@@ -63,7 +64,7 @@ function BlogEditor() {
     }
 
     const handleTitleKeyDown=(e)=>{
-        console.log(e)
+       // console.log(e)
 
         if(e.keyCode==13){
             e.preventDefault();
@@ -71,10 +72,10 @@ function BlogEditor() {
     }
 
     const handleTitleChange=(e)=>{
-        console.log(e)              //get the console value
+       // console.log(e)              //get the console value
         let input=e.target;
 
-        console.log(input.scrollHeight)//you can see height
+        ///console.log(input.scrollHeight)//you can see height
 
         input.style.height='auto';
         input.style.height=input.scrollHeight+"px"  //change titile hegith accoeding to the scrolling
@@ -91,6 +92,33 @@ function BlogEditor() {
     }
 
 
+    const handlePublishEvent=()=>{
+
+        if(!banner.length){
+             return toast.error("Uplaod a blog banner to publish it")
+        }
+
+        if(!title.length){
+            return toast.error("write blog title to publish it")
+        }
+        if(textEditor.isReady){
+            textEditor.save().then(data=>{
+                console.log(data)  //data.blocks[]
+               if(data.blocks.length){
+                  setBlog({...blog,content:data});
+                  setEditorState("publish");
+               }else{
+                  return toast.error("Write somthing in your blog to publish it")
+               }
+
+            })
+            .catch((err)=>{
+                console.log(err)
+            })
+        }
+
+    }
+
   return (
     <>
         <nav className='navbar'>
@@ -101,7 +129,9 @@ function BlogEditor() {
             {title.length?title:"New Blog"}
         </p>
             <div className='flex gap-4 ml-auto'>
-               <button className='btn-dark py-2'>
+               <button className='btn-dark py-2'
+                       onClick={handlePublishEvent}
+               >
                    Publish
                </button>
                <button className='btn-light py-2'>
@@ -140,6 +170,7 @@ function BlogEditor() {
                     </div>
 
                     <textarea
+                       defaultValue={title}
                        placeholder='Blog Title'
                        className='text-4xl font-medium w-full h-20 outline-none resize-none mt-10 leading-tight placeholder:opacity-40'
                        onKeyDown={handleTitleKeyDown}
