@@ -56,7 +56,7 @@ function PublishForm() {
         setBlog({...blog,tags:[...tags,tag]})
       }
     }else{
-      toast.error(`You can add max ${tagLimit} `)
+      toast.error(`You can add max ${tagLimit}`)
     }
     e.target.value="";
   }
@@ -126,10 +126,15 @@ function PublishForm() {
               />
               {
                 tags.map((tag,i)=>{
-                  return <Tag tag={tag} key={i}/>
+                  return <Tag tag={tag} key={i} tagIndex={i}/>
                 })
               }
+
+              
            </div>
+           <p className='mt-1 mb-4 text-dark-grey text-right'>{tagLimit-tags.length}Tags left</p>
+
+           <button className='btn-dark px-8'>Publish</button>
            
         </div>
 
