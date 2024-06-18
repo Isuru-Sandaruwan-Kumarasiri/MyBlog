@@ -63,6 +63,27 @@ function PublishForm() {
  }
 
 
+ const publishBlog=(e)=>{
+
+     if(!title.length){     
+         return toast.error("write blog  title before publishing");
+     }
+     if(!des.length || des.length){
+         return toast.error(`write a description about your blog withing ${CharactorLimit} `);
+     }
+     if(!tags.length){
+         return toast.error("Enter at least 1 tag to help us rank your blog");
+     }
+
+     let loadingToast=toast.loading("Publishing.....");
+
+
+     e.target.classList.add('disable')
+
+
+ }
+
+
 
   return (
     <Page_Animation>
@@ -134,7 +155,12 @@ function PublishForm() {
            </div>
            <p className='mt-1 mb-4 text-dark-grey text-right'>{tagLimit-tags.length}Tags left</p>
 
-           <button className='btn-dark px-8'>Publish</button>
+           <button 
+              className='btn-dark px-8'
+              onClick={publishBlog}
+           >
+            Publish
+           </button>
            
         </div>
 
