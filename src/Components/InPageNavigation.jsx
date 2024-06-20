@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 
-function InPageNavigation({ routes, defaultHidden=[],defaultActiveIndex = 0 }) {
+function InPageNavigation({ routes, defaultHidden=[],defaultActiveIndex = 0 ,children}) {
 
 
   const [InPageNavIndex, setInpageNavIndex] = useState(defaultActiveIndex); // Initialize with defaultActiveIndex
@@ -38,6 +38,8 @@ function InPageNavigation({ routes, defaultHidden=[],defaultActiveIndex = 0 }) {
         }
         <hr ref={activeTabLineRef} className="absolute bottom-0 duration-300" />
       </div>
+
+       {Array.isArray(children)?children[InPageNavIndex]:children}
     </>
   );
 }

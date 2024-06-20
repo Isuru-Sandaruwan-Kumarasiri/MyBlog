@@ -11,7 +11,9 @@ function HomePage() {
              <div  className='w-full'>
 
                 <InPageNavigation  routes={["home","trending blogs"]} defaultHidden={["trending blogs"]} >
+                          <h1>Latest blog Here</h1>
 
+                          <h1>Trending Blogs Heres</h1>
                 </InPageNavigation>
 
              </div>
