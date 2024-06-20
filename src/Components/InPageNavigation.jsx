@@ -1,22 +1,45 @@
-import React from 'react'
+import React, { useState, useRef, useEffect } from "react";
 
-function InPageNavigation({routes}) {
+function InPageNavigation({ routes, defaultHidden=[],defaultActiveIndex = 0 }) {
+
+
+  const [InPageNavIndex, setInpageNavIndex] = useState(defaultActiveIndex); // Initialize with defaultActiveIndex
+
+  const activeTabLineRef = useRef();
+  const activeTabRef = useRef();
+
+  const changPageState = (btn, i) => {
+    const { offsetWidth, offsetLeft } = btn; // Get the button properties
+    activeTabLineRef.current.style.width = offsetWidth + "px";
+    activeTabLineRef.current.style.left = offsetLeft + "px";
+    setInpageNavIndex(i);
+  };
+
+  useEffect(() => {
+    if (activeTabRef.current) {
+      changPageState(activeTabRef.current, defaultActiveIndex);
+    }
+  }, [defaultActiveIndex]); // Add defaultActiveIndex as a dependency
+
   return (
     <>
-       <div className='relative mb-8 bg-white border-b flex flex-nowrap overflow-hidden'>
-
+      <div className="relative mb-8 bg-white border-b border-grey flex flex-nowrap overflow-x-auto">
         {
-            routes.map((route,i)=>{
-                return route;
-            })
+            routes.map((route, i) => (
+                <button
+                    ref={i === defaultActiveIndex ? activeTabRef : null} // Correctly set the ref
+                    key={i}
+                    className={"p-4 px-5 capitalize " + (InPageNavIndex === i ? "text-black" : "text-dark-grey ")+(defaultHidden.includes(route)?"md:hidden":" ")}
+                    onClick={(e) => changPageState(e.target, i)}
+                >
+                    {route}
+                </button>
+            ))
         }
-
-       </div>
-
-      
-
+        <hr ref={activeTabLineRef} className="absolute bottom-0 duration-300" />
+      </div>
     </>
-  )
+  );
 }
 
-export default InPageNavigation
+export default InPageNavigation;
