@@ -3,6 +3,7 @@ import Page_Animation from '../Common/Page_Animation'
 import InPageNavigation from '../Components/InPageNavigation'
 import axios from 'axios';
 import Loader from '../Components/Loader';
+import BlogPostCard from '../Components/BlogPostCard';
 
 function HomePage() {
 
@@ -42,7 +43,11 @@ function HomePage() {
                             {
                               blogs==null ?<Loader/> :
                               blogs.map((blog,i)=>{
-                                return <h1 key={i}> {blog.title}</h1>
+                                return <Page_Animation transition={{duration:1,delay:i*1}} keyValue={i}>
+                                           
+                                           <BlogPostCard content={blog} author={blog.author.personal_info}/>
+
+                                       </Page_Animation>
                               })
                             }
                           </>
