@@ -4,10 +4,13 @@ import InPageNavigation from '../Components/InPageNavigation'
 import axios from 'axios';
 import Loader from '../Components/Loader';
 import BlogPostCard from '../Components/BlogPostCard';
+import MinimalBlogPostCard from '../Components/MinimalBlogPostCard';
 
 function HomePage() {
 
   let [blogs,setBlog]=useState(null);
+  let [trendingBlogs,setTrendingBlog]=useState(null);
+
 
   const fetchlatestBlogs=()=>{
 
@@ -22,9 +25,23 @@ function HomePage() {
     })
   }
 
+  const fetchTrendingBlogs=()=>{
+
+    axios.get(import.meta.env.VITE_SERVER_DOMAIN +"/latest-blogs")
+    .then(({data})=>{
+       //console.log(data.blogs)
+       setTrendingBlog(data.blogs)
+
+    })
+    .catch(err=>{
+       console.log(err)
+    })
+  }
+
   useEffect(()=>{
 
     fetchlatestBlogs();
+    fetchTrendingBlogs();
 
   },[])
 
@@ -52,7 +69,16 @@ function HomePage() {
                             }
                           </>
 
-                          <h1>Trending Blogs Heres</h1>
+                          {
+                            trendingBlogs==null ?<Loader/> :
+                            trendingBlogs.map((blog,i)=>{
+                              return <Page_Animation transition={{duration:1,delay:i*1}} keyValue={i}>
+                                         
+                                         <MinimalBlogPostCard blog={blog} index={i} />
+
+                                     </Page_Animation>
+                            })
+                          }
                 </InPageNavigation>
 
              </div>
