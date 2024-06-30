@@ -6,6 +6,7 @@ import Loader from '../Components/Loader';
 import BlogPostCard from '../Components/BlogPostCard';
 import MinimalBlogPostCard from '../Components/MinimalBlogPostCard';
 import NoDataMessage from '../Components/NoDataMessage';
+import { FilterPaginationData } from '../Common/FilterPagination';
 
 function HomePage() {
 
@@ -16,12 +17,21 @@ function HomePage() {
   let categories=["Java","Python","Javascript","React","Node Js","Next Js","tailwindcss"]
 
 
-  const fetchlatestBlogs=()=>{
+  const fetchlatestBlogs=(page=1)=>{
 
-    axios.get(import.meta.env.VITE_SERVER_DOMAIN +"/latest-blogs")
-    .then(({data})=>{
-       //console.log(data.blogs)
-       setBlog(data.blogs)
+    axios.post(import.meta.env.VITE_SERVER_DOMAIN +"/latest-blogs",{page})
+    .then(async({data})=>{
+       console.log(data.blogs)
+       //setBlog(data.blogs)
+      //  console.log(data)
+      let formatedData=await FilterPaginationData({
+        state:blogs,
+        data:data.blogs,
+        page,
+        countRoute:"/all-latest-blogs-count"
+      })
+      console.log(formatedData);
+      setBlog(formatedData);
 
     })
     .catch(err=>{
@@ -31,7 +41,7 @@ function HomePage() {
 
   const fetchTrendingBlogs=()=>{
 
-    axios.get(import.meta.env.VITE_SERVER_DOMAIN +"/latest-blogs")
+    axios.get(import.meta.env.VITE_SERVER_DOMAIN +"/trending-blogs")
     .then(({data})=>{
        //console.log(data.blogs)
        setTrendingBlog(data.blogs)
@@ -107,8 +117,8 @@ function HomePage() {
                                 blogs==null ?(
                                 <Loader/> 
                                 ) :(
-                                  blogs.length ?
-                                    blogs.map((blog,i)=>{
+                                  blogs.results.length ?
+                                    blogs.results.map((blog,i)=>{
                                       return <Page_Animation transition={{duration:1,delay:i*1}} keyValue={i}>
                                                 
                                                 <BlogPostCard content={blog} author={blog.author.personal_info}/>
