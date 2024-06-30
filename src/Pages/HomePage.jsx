@@ -5,6 +5,7 @@ import axios from 'axios';
 import Loader from '../Components/Loader';
 import BlogPostCard from '../Components/BlogPostCard';
 import MinimalBlogPostCard from '../Components/MinimalBlogPostCard';
+import NoDataMessage from '../Components/NoDataMessage';
 
 function HomePage() {
 
@@ -41,6 +42,20 @@ function HomePage() {
     })
   }
 
+  const fetchBlogsByCategory=()=>{
+
+    axios.post(import.meta.env.VITE_SERVER_DOMAIN +"/search-blogs",{tag:pageState})
+    .then(({data})=>{
+       //console.log(data.blogs)
+       setBlog(data.blogs)
+
+    })
+    .catch(err=>{
+       console.log(err)
+    })
+
+  }
+
   useEffect(()=>{
    
 
@@ -49,7 +64,10 @@ function HomePage() {
 
     if(pageState==="home"){
       fetchlatestBlogs();
+    }else{
+       fetchBlogsByCategory();
     }
+
     if (!trendingBlogs){
       fetchTrendingBlogs();
     }
@@ -85,28 +103,42 @@ function HomePage() {
                 <InPageNavigation  routes={[pageState,"trending blogs"]} defaultHidden={["trending blogs"]} >
                           <>
                             {
-                              blogs==null ?<Loader/> :
-                              blogs.map((blog,i)=>{
-                                return <Page_Animation transition={{duration:1,delay:i*1}} keyValue={i}>
-                                           
-                                           <BlogPostCard content={blog} author={blog.author.personal_info}/>
 
-                                       </Page_Animation>
-                              })
+                                blogs==null ?(
+                                <Loader/> 
+                                ) :(
+                                  blogs.length ?
+                                    blogs.map((blog,i)=>{
+                                      return <Page_Animation transition={{duration:1,delay:i*1}} keyValue={i}>
+                                                
+                                                <BlogPostCard content={blog} author={blog.author.personal_info}/>
+
+                                            </Page_Animation>
+                                    })
+                                    :<NoDataMessage message="No Blogs Published Yet"/>
+                                  )
                             }
                           </>
 
                           {
-                            trendingBlogs==null ?<Loader/> :
-                            trendingBlogs.map((blog,i)=>{
-                              return <Page_Animation transition={{duration:1,delay:i*1}} keyValue={i}>
-                                         
-                                         <MinimalBlogPostCard blog={blog} index={i} />
+                            trendingBlogs==null ?
+                            <Loader/> 
+                            :
+                             (
+                              trendingBlogs.length?
+                                  trendingBlogs.map((blog,i)=>{
+                                    return <Page_Animation transition={{duration:1,delay:i*1}} keyValue={i}>
+                                              
+                                              <MinimalBlogPostCard blog={blog} index={i} />
 
-                                     </Page_Animation>
-                            })
+                                          </Page_Animation>
+                                  })
+                                :
+                                <NoDataMessage message="No TrendingBlogs"/>
+                              )
                           }
                 </InPageNavigation>
+                        
 
              </div>
 
