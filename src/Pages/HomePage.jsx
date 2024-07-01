@@ -7,6 +7,7 @@ import BlogPostCard from '../Components/BlogPostCard';
 import MinimalBlogPostCard from '../Components/MinimalBlogPostCard';
 import NoDataMessage from '../Components/NoDataMessage';
 import { FilterPaginationData } from '../Common/FilterPagination';
+import LoadMoreDataBtn from '../Components/LoadMoreData';
 
 function HomePage() {
 
@@ -17,7 +18,7 @@ function HomePage() {
   let categories=["Java","Python","Javascript","React","Node Js","Next Js","tailwindcss"]
 
 
-  const fetchlatestBlogs=(page=1)=>{
+  const fetchlatestBlogs=({page=1})=>{
 
     axios.post(import.meta.env.VITE_SERVER_DOMAIN +"/latest-blogs",{page})
     .then(async({data})=>{
@@ -52,12 +53,20 @@ function HomePage() {
     })
   }
 
-  const fetchBlogsByCategory=()=>{
+  const fetchBlogsByCategory=({page=1})=>{
 
-    axios.post(import.meta.env.VITE_SERVER_DOMAIN +"/search-blogs",{tag:pageState})
-    .then(({data})=>{
-       //console.log(data.blogs)
-       setBlog(data.blogs)
+    axios.post(import.meta.env.VITE_SERVER_DOMAIN +"/search-blogs",{tag:pageState,page})
+    .then(async({data})=>{
+
+      let formatedData=await FilterPaginationData({
+        state:blogs,
+        data:data.blogs,
+        page,
+        countRoute:"/search-blogs-count",
+        data_to_send:{tag:pageState}
+      })
+      //console.log(formatedData);
+      setBlog(formatedData);
 
     })
     .catch(err=>{
@@ -72,10 +81,10 @@ function HomePage() {
     activeTabRef.current.click();
     
 
-    if(pageState==="home"){
-      fetchlatestBlogs();
+    if(pageState=="home"){
+      fetchlatestBlogs({page:1});
     }else{
-       fetchBlogsByCategory();
+       fetchBlogsByCategory({page:1});
     }
 
     if (!trendingBlogs){
@@ -91,7 +100,7 @@ function HomePage() {
 
     setBlog(null);
 
-    if(pageState===category){
+    if(pageState==category){
       setPageState("home");
       return
     }
@@ -128,6 +137,7 @@ function HomePage() {
                                     :<NoDataMessage message="No Blogs Published Yet"/>
                                   )
                             }
+                            <LoadMoreDataBtn state={blogs}  fetchDataFun={fetchlatestBlogs}/>
                           </>
 
                           {
