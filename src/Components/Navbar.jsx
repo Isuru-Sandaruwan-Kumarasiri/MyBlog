@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
 import logo from "../imgs/logo.png";
 import { UserContext } from "../App";
 import UserNavigationPanel from "./UserNavigationPanel";
@@ -10,6 +10,8 @@ function Navbar() {
   const [userNavPanel,setUserNavPanel]=useState(false);
 
   const { userAuth: { access_token, profile_img }, } = useContext(UserContext);
+
+  let navigate=useNavigate();
 
 
   const handleUsernavPanel=()=>{
@@ -25,6 +27,14 @@ function Navbar() {
     setTimeout(()=>{
       setUserNavPanel(false)
     },200)
+ }
+
+ const handleSearch=(e)=>{
+     let query=e.target.value;
+
+     if(e.keyCode==13 && query.length){
+      navigate(`/search/${query}`)
+     }
  }
 
 
@@ -45,6 +55,7 @@ function Navbar() {
             placeholder="Search"
             className="w-full md:w-auto bg-grey p-4 pl-6 pr-[12%] md:pr-6 rounded-full placeholder:text-dark-grey
             md:pl-12"
+            onKeyDown={handleSearch}
           />
           <i
             className="fi fi-rr-search absolute right-[10%] 

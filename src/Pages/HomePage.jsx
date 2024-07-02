@@ -137,7 +137,7 @@ function HomePage() {
                                     :<NoDataMessage message="No Blogs Published Yet"/>
                                   )
                             }
-                            <LoadMoreDataBtn state={blogs}  fetchDataFun={fetchlatestBlogs}/>
+                            <LoadMoreDataBtn state={blogs}  fetchDataFun={(pageState=="home" ? fetchlatestBlogs : fetchBlogsByCategory)}/>
                           </>
 
                           {
