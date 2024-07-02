@@ -16,6 +16,8 @@ const SearchPage=()=>{
 
     let [blogs,setBlog]=useState(null);
 
+    let [users,setUsers]=useState(null);
+
 
     const searchBlogs=({page=1,create_new_arr=false})=>{
     
@@ -41,14 +43,29 @@ const SearchPage=()=>{
          })
     
     }
+
+    const fetchUsers = (query) => { 
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs", { query })
+          .then(response => {
+            const { data: { users } } = response; // Extract users from response
+            setUsers(users); // Use the extracted users
+          })
+          .catch(error => {
+            console.error("Error fetching users:", error); // Handle errors
+          });
+      };
+
+
     useEffect(()=>{
         resetState();
         searchBlogs({page:1 ,create_new_arr:true});
+        fetchUsers();
     },[query])
 
 
     const resetState=()=>{
         setBlog(null);
+        setUsers(null);
     }
 
 
