@@ -73,7 +73,7 @@ const SearchPage=()=>{
                                 :<NoDataMessage message="No Blogs Published Yet"/>
                               )
                         }
-                        {/* <LoadMoreDataBtn state={blogs}  fetchDataFun={(pageState=="home" ? fetchlatestBlogs : fetchBlogsByCategory)}/> */}
+                         <LoadMoreDataBtn state={blogs}  fetchDataFun={searchBlogs}/> 
                      
                   </>
 
