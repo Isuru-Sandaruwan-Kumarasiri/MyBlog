@@ -8,6 +8,7 @@ import LoadMoreDataBtn from "../Components/LoadMoreData";
 import BlogPostCard from "../Components/BlogPostCard";
 import axios from "axios";
 import { FilterPaginationData } from "../Common/FilterPagination";
+import UserCard from "../Components/UserCard";
 
 
 const SearchPage=()=>{
@@ -45,7 +46,7 @@ const SearchPage=()=>{
     }
 
     const fetchUsers = (query) => { 
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs", { query })
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/search-users", { query })
           .then(response => {
             const { data: { users } } = response; // Extract users from response
             setUsers(users); // Use the extracted users
@@ -68,11 +69,32 @@ const SearchPage=()=>{
         setUsers(null);
     }
 
+    const UserCardWrapper=()=>{
+
+        return(
+            <>
+               {
+                   users==null ? <Loader/>:
+                      users.length ?
+                        users.map((user,i)=>{
+                            return <Page_Animation key={i} transition={{duration:1 ,delay:i*0.08}}>
+                                      
+                                      <UserCard user={user}/>
+                                
+                                   </Page_Animation>
+                        })
+                      :<NoDataMessage message="No user found"/>
+
+               }
+            </>
+        )
+    }
+
 
     return(
        <section className="h-cover flex justify-center gap-10 ">
            <div className="w-full">
-              <InPageNavigation routes={[`Search Result from "${query}"`,"Accounts Matched"]} defaultHidden={["Account Matched"]}>
+              <InPageNavigation routes={[`Search Result from "${query}"`,"Accounts Matched"]} defaultHidden={["Accounts Matched"]}>
                   
                   <>
                      {
@@ -94,7 +116,16 @@ const SearchPage=()=>{
                      
                   </>
 
+                 <UserCardWrapper/>
+
               </InPageNavigation>
+           </div>
+
+           <div className="min-w-[40%] lg:min-w-[350px] max-w-min border-1 border-grey pl-8 pt-3 max-md:hidden">
+              
+               <h1 className="font-medium text-xl mb-8">User related to search<i className="fi fi-rr-user"></i></h1>
+               <UserCardWrapper/>
+
            </div>
 
        </section>
