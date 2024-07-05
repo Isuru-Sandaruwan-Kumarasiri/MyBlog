@@ -163,7 +163,7 @@ function HomePage() {
              </div>
 
             {/* Filter and Trending Blogs */}
-            <div className='min-w-[40%] lg:min-w-[400px] max-w-min border-l-4 border-grey pl-8 pt-3 mx-md:hidden ' >  
+            <div className='min-w-[40%] lg:min-w-[400px] max-w-min border-l-4 border-grey pl-8 pt-3 max-md:hidden ' >  
 
                 <div className='flex flex-col gap-10'>
                       <div>
