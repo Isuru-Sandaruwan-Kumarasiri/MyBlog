@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import logo from '../imgs/logo.png'
 import Page_Animation from '../Common/Page_Animation'
 import toast, { Toaster } from 'react-hot-toast'
@@ -20,6 +20,7 @@ function PublishForm() {
   let CharactorLimit=200;
   let tagLimit=10;
 
+  let {blog_id}=useParams();
   let {blog,blog:{banner,title,tags,des,content},setEditorState,setBlog,textEditor}=useContext(EditorContext);
 
   let {userAuth:{access_token}}=useContext(UserContext);
@@ -98,7 +99,7 @@ function PublishForm() {
               title,banner,des,content,tags,draft:false
             }
         
-            axios.post(import.meta.env.VITE_SERVER_DOMAIN+'/create-blog',blogObj,{
+            axios.post(import.meta.env.VITE_SERVER_DOMAIN+'/create-blog',{...blogObj,id:blog_id},{
                headers:{
                  "Authorization":`Bearer ${access_token}`
                }
