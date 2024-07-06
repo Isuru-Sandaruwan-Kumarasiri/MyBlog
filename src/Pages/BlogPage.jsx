@@ -6,6 +6,7 @@ import Loader from "../Components/Loader";
 import { getDay } from "../Common/Date";
 import BlogInteraction from "../Components/BlogInteraction";
 import BlogPostCard from "../Components/BlogPostCard";
+import Blogcontent from "../Components/BlogContent";
 
 
 export const blogStructure={
@@ -43,6 +44,7 @@ const BlogPage=()=>{
             //console.log(blog)
             setBlog(blog);//
             setLoading(false);
+            console.log(blog.content)//content[0] ake tma pragraph eka store wela tiyenne (eka athhule blocks aeeay eke)
 
         }).catch(err=>{
             console.log(err)
@@ -94,7 +96,19 @@ const BlogPage=()=>{
 
                         <BlogInteraction/>
 
-                        {/* Blog content will go over here */}
+                       <div className="my-12 font-gelasio blog-page-content">
+
+                        {
+                            content[0].blocks.map((block,i)=>{
+                                return (
+                                    <div key={i} className="my-4 md:my-8">
+                                        <Blogcontent block={block}/>
+                                    </div>
+                                )
+                            })
+                        }
+
+                       </div>
 
                         <BlogInteraction/>
                         {
