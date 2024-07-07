@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { BlogContext } from "../Pages/BlogPage";
 import { Link } from "react-router-dom";
 import { UserContext } from "../App";
@@ -11,13 +11,35 @@ const BlogInteraction=()=>{
 
     let {userAuth:{username,access_token}}=useContext(UserContext);
 
+
+    useEffect(()=>{
+        if(access_token){
+            //make request to get like information
+            axios.post(import.meta.env.VITE_SERVER_DOMAIN +"/isliked-by-user",{_id},{
+                headers:{
+                    'Authorization':`Bearer ${access_token}`
+                }
+            })
+            .then(({data:result})=>{
+                //console.log(result)
+                setLikedByUser(Boolean(result))
+            })
+            .catch(err=>(
+                console.log(err)
+            ))
+            
+
+        
+        }
+    })
+
     const handleLike=()=>{
         
         if(access_token){
             //like the blog
             setLikedByUser(preVal=>!preVal)
 
-            !islikedByUser ? total_likes++ :total_likes--;
+            islikedByUser ? total_likes++ :total_likes--;
             setBlog({...blog,activity:{...activity, total_likes}})
             // console.log(islikedByUser);
 
