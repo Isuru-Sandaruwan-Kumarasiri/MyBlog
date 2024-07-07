@@ -7,7 +7,7 @@ import axios from "axios";
 
 const BlogInteraction=()=>{
 
-    let {blog,blog:{ _id,title,blog_id,activity,activity:{total_likes,total_comments},author:{personal_info:{username:author_username}}},setBlog,islikedByUser,setLikedByUser}=useContext(BlogContext);
+    let {blog,blog:{ _id,title,blog_id,activity,activity:{total_likes,total_comments},author:{personal_info:{username:author_username}}},setBlog,islikedByUser,setLikedByUser,commentsWrapper,setCommentWrapper,totalParentCommentsLoaded,setTotalParentCommentsLoaded}=useContext(BlogContext);
 
     let {userAuth:{username,access_token}}=useContext(UserContext);
 
@@ -22,7 +22,7 @@ const BlogInteraction=()=>{
             })
             .then(({data:result})=>{
                 //console.log(result)
-                setLikedByUser(Boolean(result))
+                //setLikedByUser(Boolean(result))
             })
             .catch(err=>(
                 console.log(err)
@@ -37,9 +37,9 @@ const BlogInteraction=()=>{
         
         if(access_token){
             //like the blog
-            setLikedByUser(preVal=>!preVal)
+            setLikedByUser( preVal=> !preVal);
 
-            islikedByUser ? total_likes++ :total_likes--;
+           !islikedByUser ? total_likes++ :total_likes--;
             setBlog({...blog,activity:{...activity, total_likes}})
             // console.log(islikedByUser);
 
@@ -78,15 +78,16 @@ const BlogInteraction=()=>{
                 
                     <button
                     onClick={handleLike}
-                    className={"w-10 h-10 rounded-full flex items-center justify-center  "+(islikedByUser? " bg-red/20 text-red": "bg-grey/80")}
+                    className={"w-10 h-10 rounded-full flex items-center justify-center  "+(islikedByUser ? " bg-red/20 text-red": " bg-grey/80")}
                     >
-                        <i className={"fi "+(islikedByUser ? " fi-sr-heart" :" fi-sr-heart")}></i>
+                        <i className={"fi "+( islikedByUser ? " fi-sr-heart" :" fi-rr-heart")}></i>
                     </button>
-                    <p className="text-xl text-dark-grey">{total_likes}</p>
+                    <p className="text-xl text-dark-grey">{total_likes}</p>    
         
 
                 
                     <button
+                    onClick={()=>setCommentWrapper(preVal=>!preVal)}
                     className="w-10 h-10 rounded-full flex items-center justify-center bg-grey/80"
                     >
                         <i className="fi fi-rr-comment-dots"></i>

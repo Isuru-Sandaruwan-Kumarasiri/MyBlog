@@ -7,6 +7,7 @@ import { getDay } from "../Common/Date";
 import BlogInteraction from "../Components/BlogInteraction";
 import BlogPostCard from "../Components/BlogPostCard";
 import Blogcontent from "../Components/BlogContent";
+import CommentsWrapper from "../Components/CommentWrapper";
 
 
 export const blogStructure={
@@ -28,6 +29,8 @@ const BlogPage=()=>{
     const [loading,setLoading]=useState(true);
     const [similerBlogs,setSimilerBlogs]=useState(null);
     const [islikedByUser,setLikedByUser]=useState(false);
+    const [commentsWrapper,setCommentWrapper]=useState(false);
+    const [totalParentCommentsLoaded,setTotalParentCommentsLoaded]=useState(0);
 
     let {title,content,banner,author:{personal_info:{ fullname,username:author_username,profile_img}},publishedAt}=blog;
 
@@ -63,6 +66,9 @@ const BlogPage=()=>{
         setBlog(blogStructure);
         setSimilerBlogs(null);
         setLoading(true);
+        setLikedByUser(false);
+       // setCommentWrapper(false);
+        setTotalParentCommentsLoaded(0);;
     }
 
       return(
@@ -70,7 +76,9 @@ const BlogPage=()=>{
             {
                 loading ? <Loader/>
                 :
-                <BlogContext.Provider value={{blog,setBlog,islikedByUser,setLikedByUser}}>
+                <BlogContext.Provider value={{blog,setBlog,islikedByUser,setLikedByUser,commentsWrapper,setCommentWrapper,totalParentCommentsLoaded,setTotalParentCommentsLoaded}}>
+
+                    <CommentsWrapper/>              
 
                     <div className="max-w-[900px] center py-10 max-lg:px-[5vw]">
                         
