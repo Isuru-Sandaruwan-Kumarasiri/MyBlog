@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { BlogContext } from "../Pages/BlogPage";
+import CommentField from "./CommentField";
 
 const CommentsWrapper=()=>{
 
@@ -20,6 +21,8 @@ const CommentsWrapper=()=>{
              </div>
 
              <hr className="border-grey my-8 w-[120%] -ml-10" />
+
+             <CommentField action={"Comment"}/>
 
         </div>
     )
