@@ -7,7 +7,7 @@ import { getDay } from "../Common/Date";
 import BlogInteraction from "../Components/BlogInteraction";
 import BlogPostCard from "../Components/BlogPostCard";
 import Blogcontent from "../Components/BlogContent";
-import CommentsWrapper from "../Components/CommentWrapper";
+import CommentsWrapper, { fetchComments } from "../Components/CommentWrapper";
 
 
 export const blogStructure={
@@ -37,7 +37,14 @@ const BlogPage=()=>{
     const fetchBlog=()=>{
 
         axios.post(import.meta.env.VITE_SERVER_DOMAIN +"/get-blog",{blog_id})
-        .then(({data:{blog}})=>{
+        .then(async({data:{blog}})=>{
+
+            blog.comments=await fetchComments({blog_id:blog._id,setParentCommentCountFun:setTotalParentCommentsLoaded})
+            setBlog(blog);
+
+             console.log(blog)
+
+
 
             axios.post(import.meta.env.VITE_SERVER_DOMAIN +"/search-blogs",{tag:blog.tags[0],limit:6,eliminate_blog:blog_id})//dant tiyena blog id eka natuwa tag[0] blog ekak seveema
             .then(({data})=>{
@@ -46,7 +53,7 @@ const BlogPage=()=>{
             })
 
             //console.log(blog)
-            setBlog(blog);//
+           //
             setLoading(false);
             console.log(blog.content)//content[0] ake tma pragraph eka store wela tiyenne (eka athhule blocks aeeay eke)
 
