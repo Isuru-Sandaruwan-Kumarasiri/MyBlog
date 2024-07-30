@@ -75,7 +75,7 @@ const CommentField = ({ action,index=undefined,replyingTo=undefined,setReplying 
 
         }else{
           data.childrenLevel = 0;
-          newCommentArr = [data,...commentsArr];
+          newCommentArr = [data, ...commentsArr];
         }
 
         

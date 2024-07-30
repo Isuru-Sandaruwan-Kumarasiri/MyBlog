@@ -1,18 +1,19 @@
-import { useContext, useState } from "react";
+import { Children, useContext, useState } from "react";
 import { getDay } from "../Common/Date";
 import { UserContext } from "../App";
 import toast, { Toaster } from "react-hot-toast";
 import CommentField from "./CommentField";
 import { BlogContext } from "../Pages/BlogPage";
+import axios from "axios";
 
 
 
 
 const CommentCard=({index,leftVal,commentData})=>{
 
-    let {commented_by:{personal_info:{profile_img,fullname,username}},commentedAt,comment,_id}=commentData;
+    let {commented_by:{personal_info:{profile_img,fullname,username}},commentedAt,comment,_id,children}=commentData;
 
-    let {blog,blog:{comments:{results:commentsArr}},setBlog}=useContext(BlogContext)
+    let {blog,blog:{comments,comments:{results:commentsArr}},setBlog}=useContext(BlogContext)
 
     let {userAuth:{access_token}}=useContext(UserContext);
 
@@ -30,6 +31,27 @@ const CommentCard=({index,leftVal,commentData})=>{
             }
         }
         setBlog({...blog,comments:{results:commentsArr}})
+    }
+    const loadReplies=({skip=0})=>{
+         
+        if(children.length){
+            hideReplies();
+
+            axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/get-replies",{_id,skip})
+            .then(({data:{replies}})=>{
+
+                commentData.isReplyLoaded=true;
+                for(let i=0;i<replies.length;i++){
+                    replies[i].childrenLevel=commentData.childrenLevel+1;
+
+                    commentsArr.splice(index+1+i+skip,0,replies[i])
+                }
+                setBlog({...blog,comments:{...comments,results:commentsArr}})
+            })
+            .catch(err=>{
+                console.log(err);
+            })
+        }
     }
 
     const hideReplies=()=>{
@@ -69,14 +91,23 @@ const CommentCard=({index,leftVal,commentData})=>{
                                     onClick={hideReplies}
                             
                             >
-                            <i className="fi fi-rs-comment-dots"></i> Hide Reply
-                            </button> :""
+                                <i className="fi fi-rs-comment-dots"></i> Hide Reply
+                            </button> :
+                  
+                            <button
+                                className="text-dark-grey p-2 px-3 hover:bg-grey/30 rounded-md flex items-center gap-2"
+                                onClick={loadReplies}
+                            >
+                               <i className="fi fi-rs-comment-dots"></i>{children.length}Reply
+                            </button>
                     }
+
+                 
                     <button 
                         className="underline"
                         onClick={handleReply}
                         >Reply
-                        </button>
+                    </button>
                   </div>
                   {
                     isReplaying ?
