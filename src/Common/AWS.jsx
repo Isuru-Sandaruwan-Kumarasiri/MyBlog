@@ -1,5 +1,7 @@
 import axios from "axios";
-console.log(import.meta.env)
+// console.log(import.meta.env)
+
+
 
 export const UploadImage=async(img)=>{
     let imgUrl=null;
@@ -23,3 +25,4 @@ export const UploadImage=async(img)=>{
     })
     return imgUrl;
 }
+

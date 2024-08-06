@@ -5,6 +5,7 @@ import toast, { Toaster } from "react-hot-toast";
 import CommentField from "./CommentField";
 import { BlogContext } from "../Pages/BlogPage";
 import axios from "axios";
+import LoadMoreDataBtn from "./LoadMoreData";
 
 
 
@@ -65,19 +66,19 @@ const CommentCard=({index,leftVal,commentData})=>{
 
         setBlog({...blog,comments:{results:commentsArr},activity:{...activity,total_parent_comments:total_parent_comments-(commentData.childrenLevel==0 && isDelete ? 1 :0)}})
     }
-    const loadReplies=({skip=0})=>{
+    const loadReplies=({skip=0,currentIndex=index})=>{
          
-        if(children.length){
+        if(commentsArr[currentIndex].children.length){
             hideReplies();
 
-            axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/get-replies",{_id,skip})
+            axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/get-replies",{_id:commentsArr[currentIndex]._id,skip})
             .then(({data:{replies}})=>{
 
-                commentData.isReplyLoaded=true;
+                commentsArr[currentIndex].isReplyLoaded=true;
                 for(let i=0;i<replies.length;i++){
-                    replies[i].childrenLevel=commentData.childrenLevel+1;
+                    replies[i].childrenLevel=commentsArr[currentIndex].childrenLevel+1;
 
-                    commentsArr.splice(index+1+i+skip,0,replies[i])
+                    commentsArr.splice(currentIndex +1+i+skip,0,replies[i])
                 }
                 setBlog({...blog,comments:{...comments,results:commentsArr}})
             })
@@ -89,7 +90,7 @@ const CommentCard=({index,leftVal,commentData})=>{
 
     const deleteComment=(e)=>{
         
-        e.target.setAttribute("disabled",true);//clicke counte disble
+        e.target.setAttribute("disabled",true);//click counte disble
 
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/delete-comment",{_id},{
             headers:{
@@ -118,6 +119,35 @@ const CommentCard=({index,leftVal,commentData})=>{
         setReplaying(preVal=>!preVal);
 
 
+    }
+
+
+    const LoardMoreRepliesButtotn=()=>{
+
+        let parentIndex = getParentIndex();
+
+        let button=<button onClick={()=>loadReplies({skip:index-parentIndex,currentIndex:parentIndex})} className="text-dark-grey p-2 px-3 hover:bg-grey/30 rounded-md flex items-center gap-2">Loard More Replies</button>
+
+        if(commentsArr[index+1]){
+            if(commentsArr[index+1].childrenLevel<commentsArr[index].childrenLevel){
+                if((index-parentIndex)<commentsArr[parentIndex].children.length){
+                   
+                    return button;
+                }
+                }
+               
+        }else{
+            if(parentIndex){
+                if(commentsArr[index+1].childrenLevel<commentsArr[index].childrenLevel){
+                    if((index-parentIndex)<commentsArr[parentIndex].children.length){
+                       
+                        return button;
+                    }
+                    }
+            }
+        }
+
+       
     }
 
     return(
@@ -176,6 +206,8 @@ const CommentCard=({index,leftVal,commentData})=>{
                   }
             </div>
 
+           
+               <LoardMoreRepliesButtotn/>
         </div>
     )
 }
