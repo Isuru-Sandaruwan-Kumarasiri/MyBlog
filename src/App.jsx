@@ -9,6 +9,7 @@ import SearchPage from "./Pages/SearchPage";
 import PageNotFound from "./Pages/PageNotFound"
 import ProfilePage from "./Pages/ProfilePage"
 import BlogPage from "./Pages/BlogPage";
+import SideNav from "./Components/SideNav";
 
 
 
@@ -37,6 +38,10 @@ const App = () => {
                 <Route path="/editor/:blog_id" element={<Editor/>} />
                 <Route path="/" element={<Navbar/>}>
                    <Route index element={<HomePage/>}/>
+                   <Route path="settings" element={<SideNav/>}>
+                        <Route path="edit-profile" element={<h1>this it edit profile page</h1>}/>
+                        <Route path="edit-profile" element={<h1>this is change password page</h1>}/>
+                   </Route>
                    <Route path="signin" element={<UserAuthForm type="sign-in"/>}></Route>
                    <Route path="signup" element={<UserAuthForm type="sign-up"/>}></Route>
                    <Route path="search/:query" element={<SearchPage/>}/>
