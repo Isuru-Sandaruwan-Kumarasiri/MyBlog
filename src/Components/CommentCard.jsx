@@ -132,18 +132,18 @@ const CommentCard=({index,leftVal,commentData})=>{
             if(commentsArr[index+1].childrenLevel<commentsArr[index].childrenLevel){
                 if((index-parentIndex)<commentsArr[parentIndex].children.length){
                    
-                    return button;
+                    return button
                 }
                 }
                
         }else{
             if(parentIndex){
-                if(commentsArr[index+1].childrenLevel<commentsArr[index].childrenLevel){
+               
                     if((index-parentIndex)<commentsArr[parentIndex].children.length){
                        
-                        return button;
+                        return <button onClick={()=>loadReplies({skip:index-parentIndex,currentIndex:parentIndex})} className="text-dark-grey p-2 px-3 hover:bg-grey/30 rounded-md flex items-center gap-2">Loard More Replies</button>
                     }
-                    }
+                    
             }
         }
 
