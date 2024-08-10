@@ -40,7 +40,7 @@ const App = () => {
                    <Route index element={<HomePage/>}/>
                    <Route path="settings" element={<SideNav/>}>
                         <Route path="edit-profile" element={<h1>this it edit profile page</h1>}/>
-                        <Route path="edit-profile" element={<h1>this is change password page</h1>}/>
+                        <Route path="change-password" element={<h1>this is change password page</h1>}/>
                    </Route>
                    <Route path="signin" element={<UserAuthForm type="sign-in"/>}></Route>
                    <Route path="signup" element={<UserAuthForm type="sign-up"/>}></Route>

@@ -36,7 +36,7 @@ function UserNavigationPanel() {
           Dashboard
         </Link>
 
-        <Link to="/setting/edit-profile" className="link pl-8 py-4s">
+        <Link to="/settings/edit-profile" className="link pl-8 py-4s">
           Settings
         </Link>
 
