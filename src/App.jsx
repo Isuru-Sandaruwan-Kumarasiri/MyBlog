@@ -10,6 +10,9 @@ import PageNotFound from "./Pages/PageNotFound"
 import ProfilePage from "./Pages/ProfilePage"
 import BlogPage from "./Pages/BlogPage";
 import SideNav from "./Components/SideNav";
+import ChangePassword from "./Components/ChangePassword";
+
+
 
 
 
@@ -40,7 +43,7 @@ const App = () => {
                    <Route index element={<HomePage/>}/>
                    <Route path="settings" element={<SideNav/>}>
                         <Route path="edit-profile" element={<h1>this it edit profile page</h1>}/>
-                        <Route path="change-password" element={<h1>this is change password page</h1>}/>
+                        <Route path="change-password" element={<ChangePassword/>}/>
                    </Route>
                    <Route path="signin" element={<UserAuthForm type="sign-in"/>}></Route>
                    <Route path="signup" element={<UserAuthForm type="sign-up"/>}></Route>
