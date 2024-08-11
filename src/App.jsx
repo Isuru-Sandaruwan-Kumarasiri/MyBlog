@@ -11,6 +11,7 @@ import ProfilePage from "./Pages/ProfilePage"
 import BlogPage from "./Pages/BlogPage";
 import SideNav from "./Components/SideNav";
 import ChangePassword from "./Components/ChangePassword";
+import EditProfilePage from "./Pages/EditProfilePage";
 
 
 
@@ -42,7 +43,7 @@ const App = () => {
                 <Route path="/" element={<Navbar/>}>
                    <Route index element={<HomePage/>}/>
                    <Route path="settings" element={<SideNav/>}>
-                        <Route path="edit-profile" element={<h1>this it edit profile page</h1>}/>
+                        <Route path="edit-profile" element={<EditProfilePage/>}/>
                         <Route path="change-password" element={<ChangePassword/>}/>
                    </Route>
                    <Route path="signin" element={<UserAuthForm type="sign-in"/>}></Route>
