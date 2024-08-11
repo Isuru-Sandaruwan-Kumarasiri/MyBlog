@@ -8,6 +8,7 @@ import toast, { Toaster } from "react-hot-toast";
 import InputBox from "../Components/InputBox";
 import { Link } from "react-router-dom";
 import { UploadImage } from "../Common/AWS";
+import { StoreInSession } from "../Common/Session";
 
 const EditProfilePage = () => {
 
@@ -16,7 +17,7 @@ const EditProfilePage = () => {
     let bioLimit=150;
   let {
     userAuth,
-    userAuth: { access_token },
+    userAuth: { access_token },setUserAuth
   } = useContext(UserContext);
 
   const [profile, setProfile] = useState(profileDataStructure);
@@ -75,7 +76,31 @@ const EditProfilePage = () => {
 
         UploadImage(UpdateProfileImg)
         .then(url=>{
-            console.log(url)
+            if(url){
+                axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/update-profile-img",{url},{
+                    headers:{
+                        'Authorization':`Bearer ${access_token}`
+                    }
+                })
+                .then(({data})=>{
+                    let newUserAuth={...userAuth,profile_img:data.profile_img}
+
+                    StoreInSession("user",JSON.stringify(newUserAuth));
+                    setUserAuth(newUserAuth);
+
+                    setUpdateprofileImg(null);
+
+                    toast.dismiss(loadingToast);
+                    e.target.removeAttribute("disabled")
+                    toast.success("Uploaded 👍")
+                })
+                .catch(({responce})=>{
+
+                    toast.dismiss(loadingToast);
+                    e.target.removeAttribute("disabled")
+                    toast.error(responce.data.error)
+                })
+            }
         })
         .catch(err=>{
             console.log(err);
