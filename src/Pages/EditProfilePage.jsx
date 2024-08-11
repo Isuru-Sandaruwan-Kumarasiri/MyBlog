@@ -4,9 +4,10 @@ import axios from "axios";
 import { profileDataStructure } from "./ProfilePage";
 import Page_Animation from "../Common/Page_Animation";
 import Loader from "../Components/Loader";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import InputBox from "../Components/InputBox";
 import { Link } from "react-router-dom";
+import { UploadImage } from "../Common/AWS";
 
 const EditProfilePage = () => {
 
@@ -21,6 +22,7 @@ const EditProfilePage = () => {
   const [profile, setProfile] = useState(profileDataStructure);
   const [loading, setLoading] = useState(true);
   const [charcterLeft,setCharacterLeft]=useState(bioLimit);
+  const [UpdateProfileImg,setUpdateprofileImg]=useState(null);
 
   const {
     personal_info: {
@@ -57,6 +59,29 @@ const EditProfilePage = () => {
 
     let img=e.target.files[0];
     profileImgEle.current.src=URL.createObjectURL(img);
+
+    setUpdateprofileImg(img);
+
+
+  }
+  const handleImageUpload=(e)=>{
+
+    e.preventDefault();
+
+    if(UpdateProfileImg){
+
+        let loadingToast=toast.loading("Uploading......");
+        e.target.setAttribute("disabled",true);
+
+        UploadImage(UpdateProfileImg)
+        .then(url=>{
+            console.log(url)
+        })
+        .catch(err=>{
+            console.log(err);
+        })
+    }
+
   }
 
   return (
@@ -89,7 +114,7 @@ const EditProfilePage = () => {
                             hidden
                             onChange={handleImagePreview}
                         />
-                        <button className="btn-light mt-5 max-lg:center lg:w-full px-10 ">Upload</button>
+                        <button className="btn-light mt-5 max-lg:center lg:w-full px-10 " onClick={handleImageUpload}>Upload</button>
                 </div>
                 <div className="w-full">
 
