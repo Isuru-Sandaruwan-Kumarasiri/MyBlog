@@ -13,6 +13,7 @@ import { StoreInSession } from "../Common/Session";
 const EditProfilePage = () => {
 
     let profileImgEle=useRef();
+    let editProfileForm=useRef();
 
     let bioLimit=150;
   let {
@@ -108,18 +109,41 @@ const EditProfilePage = () => {
     }
 
   }
+  const handleSubmit=(e)=>{
+
+    e.preventDefault();
+
+    let form =new FormData(editProfileForm.current);
+    let formData={}
+  
+
+    for(let [key,value] of form.entries()){
+      formData[key]=value
+    }
+    // console.log(formData)
+
+    let {username,bio,youtube,facebook,twitter,github,instagram,website}=formData;
+
+    if(username.length<3){
+      return toast.error("Username should be at least 3 letter loang")
+    }
+    if(bio.length>bioLimit){
+      return toast.error(`Bio should not be more than ${bioLimit}`)
+    }
+
+  }
 
   return (
     <Page_Animation>
       {loading ? (
         <Loader />
       ) : (
-        <form action="">
+        <form action="" ref={editProfileForm}>
           <Toaster />
 
           <h1 className="max-md:hidden">Edit Profile</h1>
 
-          <div className="flex flex-col lg:flex-row items-start ppy-10 gap-8 lg:gap-10">
+          <div className="flex flex-col lg:flex-row items-start py-10 gap-8 lg:gap-10">
                 <div className="max-lg:center mb-5">
                         <label
                             htmlFor="uploadImg"
@@ -175,7 +199,7 @@ const EditProfilePage = () => {
                            }
                     </div>
                     
-                    <button className="btn-dark w-auto px-10 " type="submit" >Update</button>
+                    <button className="btn-dark w-auto px-10 " type="submit" onClick={handleSubmit} >Update</button>
 
                 </div>
           </div>
