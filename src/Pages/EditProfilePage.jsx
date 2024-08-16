@@ -111,25 +111,59 @@ const EditProfilePage = () => {
   }
   const handleSubmit=(e)=>{
 
-    e.preventDefault();
+        e.preventDefault();
 
-    let form =new FormData(editProfileForm.current);
-    let formData={}
-  
+        let form =new FormData(editProfileForm.current);
+        let formData={}
+      
 
-    for(let [key,value] of form.entries()){
-      formData[key]=value
-    }
-    // console.log(formData)
+        for(let [key,value] of form.entries()){
+          formData[key]=value
+        }
+        // console.log(formData)
 
-    let {username,bio,youtube,facebook,twitter,github,instagram,website}=formData;
+        let {username,bio,youtube,facebook,twitter,github,instagram,website}=formData;
 
-    if(username.length<3){
-      return toast.error("Username should be at least 3 letter loang")
-    }
-    if(bio.length>bioLimit){
-      return toast.error(`Bio should not be more than ${bioLimit}`)
-    }
+        if(username.length<3){
+          return toast.error("Username should be at least 3 letter loang")
+        }
+        if(bio.length>bioLimit){
+          return toast.error(`Bio should not be more than ${bioLimit}`)
+        }
+
+        let loadingToast=toast.loading("Updating......");
+        e.target.setAttribute("disabled",true);
+
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/update-profile",{
+          username,
+          bio,
+          social_links :{youtube,facebook,twitter,github,instagram,website}
+        },{
+          headers:{
+              'Authorization':`Bearer ${access_token}`
+          }
+      })
+      .then(({data})=>{
+
+        if(userAuth.username!=data.username){
+          let newUserAuth={...userAuth,username:data.username}
+
+          StoreInSession("user",JSON.stringify(newUserAuth));
+          setUserAuth(newUserAuth);
+        }
+        toast.dismiss(loadingToast);
+        e.target.removeAttribute("disabled");
+        toast.success("Profile Updated..👍");
+
+         
+      })
+      .catch(({responce})=>{
+        toast.dismiss(loadingToast);
+        e.target.removeAttribute("disabled");
+        toast.error(responce.data.error);
+      })
+
+        
 
   }
 
