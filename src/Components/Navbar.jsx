@@ -41,8 +41,8 @@ function Navbar() {
   return (
     <>
       <nav className="navbar">
-        <Link to="/" className="flex-none w-10">
-          <img src={logo} alt="" className=" w-full" />
+        <Link to="/" className="flex-none w-12 ">
+          <img src={logo} alt="" className=" w-full rounded-full" />
         </Link>
         <div
           className={`absolute bg-white w-full left-0 top-full mt-0.5 border-b border-grey py-4 px-[5vw]
