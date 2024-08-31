@@ -1,17 +1,41 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
 import logo from "../imgs/logo.png";
 import { UserContext } from "../App";
 import UserNavigationPanel from "./UserNavigationPanel";
+import axios from "axios";
 
 function Navbar() {
   const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
 
   const [userNavPanel,setUserNavPanel]=useState(false);
 
-  const { userAuth: { access_token, profile_img }, } = useContext(UserContext);
+  const {userAuth, userAuth: { access_token, profile_img,new_Notification_available },setUserAuth,} = useContext(UserContext);
 
   let navigate=useNavigate();
+
+  useEffect(()=>{
+
+    if(access_token){
+        axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/new-notification",{
+            headers:{
+                'Authorization':`Bearer ${access_token}`
+            }
+        })
+        .then(({data})=>{
+           
+          setUserAuth({ ...userAuth, ...data})
+          console.log(userAuth)
+        })
+        .catch(err=>{
+          console.log(err);
+        })
+    }
+
+  },[access_token])
+
+
+  console.log(new_Notification_available)
 
 
   const handleUsernavPanel=()=>{
@@ -44,6 +68,9 @@ function Navbar() {
         <Link to="/" className="flex-none w-12 ">
           <img src={logo} alt="" className=" w-full rounded-full" />
         </Link>
+
+       
+
         <div
           className={`absolute bg-white w-full left-0 top-full mt-0.5 border-b border-grey py-4 px-[5vw]
           md:border-0 md:block md:relative md:inset-0 md:p-0 md:w-auto ${
