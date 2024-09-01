@@ -12,6 +12,7 @@ import BlogPage from "./Pages/BlogPage";
 import SideNav from "./Components/SideNav";
 import ChangePassword from "./Components/ChangePassword";
 import EditProfilePage from "./Pages/EditProfilePage";
+import NotificationPage from "./Pages/NotificationPage";
 
 
 
@@ -42,6 +43,9 @@ const App = () => {
                 <Route path="/editor/:blog_id" element={<Editor/>} />
                 <Route path="/" element={<Navbar/>}>
                    <Route index element={<HomePage/>}/>
+                   <Route path="dashboard" element={<SideNav/>}>
+                        <Route path="notification" element={<NotificationPage/>}/>
+                   </Route>
                    <Route path="settings" element={<SideNav/>}>
                         <Route path="edit-profile" element={<EditProfilePage/>}/>
                         <Route path="change-password" element={<ChangePassword/>}/>

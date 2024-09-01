@@ -8,59 +8,54 @@ import axios from "axios";
 function Navbar() {
   const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
 
-  const [userNavPanel,setUserNavPanel]=useState(false);
+  const [userNavPanel, setUserNavPanel] = useState(false);
 
-  const {userAuth, userAuth: { access_token, profile_img,new_Notification_available },setUserAuth,} = useContext(UserContext);
+  const {
+    userAuth,
+    userAuth: { access_token, profile_img, new_Notification_available },
+    setUserAuth,
+  } = useContext(UserContext);
 
-  let navigate=useNavigate();
+  let navigate = useNavigate();
 
-  useEffect(()=>{
-
-    if(access_token){
-        axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/new-notification",{
-            headers:{
-                'Authorization':`Bearer ${access_token}`
-            }
+  useEffect(() => {
+    if (access_token) {
+      axios
+        .get(import.meta.env.VITE_SERVER_DOMAIN + "/new-notification", {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
         })
-        .then(({data})=>{
-           
-          setUserAuth({ ...userAuth, ...data})
-          console.log(userAuth)
+        .then(({ data }) => {
+          setUserAuth({ ...userAuth, ...data });
         })
-        .catch(err=>{
+        .catch((err) => {
           console.log(err);
-        })
+        });
     }
+  }, [access_token]);
 
-  },[access_token])
+  console.log(new_Notification_available);
 
-
-  console.log(new_Notification_available)
-
-
-  const handleUsernavPanel=()=>{
-      //  setUserNavPanel(true)
-      setUserNavPanel(currentVal=>!currentVal)
-
-      
-  }
+  const handleUsernavPanel = () => {
+    //  setUserNavPanel(true)
+    setUserNavPanel((currentVal) => !currentVal);
+  };
   //outside clicking hide handling
-  const handleBlur=()=>{
-       
+  const handleBlur = () => {
     // setUserNavPanel(false)
-    setTimeout(()=>{
-      setUserNavPanel(false)
-    },200)
- }
+    setTimeout(() => {
+      setUserNavPanel(false);
+    }, 200);
+  };
 
- const handleSearch=(e)=>{
-     let query=e.target.value;
+  const handleSearch = (e) => {
+    let query = e.target.value;
 
-     if(e.keyCode==13 && query.length){
-      navigate(`/search/${query}`)
-     }
- }
-
+    if (e.keyCode == 13 && query.length) {
+      navigate(`/search/${query}`);
+    }
+  };
 
   return (
     <>
@@ -68,8 +63,6 @@ function Navbar() {
         <Link to="/" className="flex-none w-12 ">
           <img src={logo} alt="" className=" w-full rounded-full" />
         </Link>
-
-       
 
         <div
           className={`absolute bg-white w-full left-0 top-full mt-0.5 border-b border-grey py-4 px-[5vw]
@@ -89,7 +82,6 @@ function Navbar() {
         md:pointer-events-none md:left-5 top-1/3 -translate-y-1 text-xl
         text-dark-grey"
           ></i>
-          
         </div>
         <div className="flex items-center gap-3 md:gap-6 ml-auto">
           <button
@@ -100,36 +92,40 @@ function Navbar() {
           </button>
 
           <Link to="/editor" className="hidden md:flex gap-2 link">
-                <i className="fi fi-rr-file-edit"></i>
-                <p>write</p>
-              </Link>
+            <i className="fi fi-rr-file-edit"></i>
+            <p>write</p>
+          </Link>
 
           {access_token ? (
             <>
               <Link to="/dasjboard/notification">
-                <button className="w-12  h-12 rounded-full bg-grey relative hover:bg-black/10"><i className="fi fi-rr-bell text-2xl block mt-1"></i></button>
+                <button className="w-12  h-12 rounded-full bg-grey relative hover:bg-black/10">
+                  <i className="fi fi-rr-bell text-2xl block mt-1"></i>
+                  {
+                    new_Notification_available ?
+                  <span className="bg-red w-3 h-3 rounded-full absolute z-10 top-2 right-2"></span>
+                  :""}
+                </button>
               </Link>
 
               <div className="relative ">
-
-                <button className="w-12 h-12 mt-1"
-                onClick={handleUsernavPanel}
-                onBlur={handleBlur}
+                <button
+                  className="w-12 h-12 mt-1"
+                  onClick={handleUsernavPanel}
+                  onBlur={handleBlur}
                 >
-                   <img src={profile_img} alt=""  className="w-full h-full object-cover rounded-full"/>
+                  <img
+                    src={profile_img}
+                    alt=""
+                    className="w-full h-full object-cover rounded-full"
+                  />
                 </button>
 
-                 { userNavPanel?
-                <UserNavigationPanel/>
-                :""
-                 }
-                 
+                {userNavPanel ? <UserNavigationPanel /> : ""}
               </div>
             </>
           ) : (
             <>
-             
-
               <Link className="btn-dark py-2" to="/signin">
                 Sign In
               </Link>
@@ -139,9 +135,6 @@ function Navbar() {
               </Link>
             </>
           )}
-
-
-
         </div>
       </nav>
       <Outlet />
